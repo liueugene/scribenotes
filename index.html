@@ -43,6 +43,7 @@
           </ul>
 
       </ul>
+      <hr />
     </div>
 
     <div class="content-section">
@@ -54,6 +55,8 @@
       <p>To introduce the topic of scheduling, consider an order for 500 Model T's from Chicago. Once this order is processed, we can start assembling these cars. We can start building cars, and after some time we complete our first car. Eventually more and more Model T's are being completed, but there is a very high demand for Model A's, so we switch to producing these cars instead. Sometime along the way, we'll switch back, finish our order of 500 Model T's, and continue to process new orders.</p> 
       <p>In a way, this is much like scheduling algorithms for computers. When an order first comes in, it's equivalent to a process being forked to run a job. An execvp() call can be seen as when assembly of a Model T begins. When the first car is completed, that is the first useful output of a process. Switching between making different cars would be a context switch. The turnaround time would be the time between the fork() call and exit, and runtime would be the time between execvp() and exit.</p>
       <img src="images/programsched.png">
+      <br />
+      <hr />
 
     </div>
 
@@ -150,6 +153,8 @@
       </table>
 
       <p>From the point of view of <em>throughput</em>, utilization was not bad, since there were only 3 context switches between 4 jobs. This is the smallest number possible if we want to run every job. The wait time is quite long though, especially since job C runs for a long time before D can start.</p>
+
+      <hr />
     </div>
 
     <div class="content-section">
@@ -197,7 +202,8 @@
       </table>
 
       <p>A few important things to note about shortest job first is that we must make an assumption that we know how long each job is. This is reasonable if we run our program in a well controlled environment. If we run this scheduling policy though, we run the risk of <b><em>starvation</em></b>, which means that a job may never run. Since an infinite number of shorter jobs can keep arriving, there is no upper bound for the time a long(er) job may have to wait.</p>
-      <p>Shortest job first is <b><em>not</em> a fair scheduling policy</b>, as it may have a longer process wait for an extended period of time to make way for shorter processes. First come first serve on the other hand is fair, since each process will run in the order it arrives, and won’t have anything else scheduled before it.</p>
+      <p>Shortest job first is <b><em>not</em> a fair scheduling policy</b>, as it may have a longer process wait for an extended period of time to make way for shorter processes. First come first serve on the other hand is fair, since each process will run in the order it arrives, and wont have anything else scheduled before it.</p>
+      <hr />
 
     </div>
 
@@ -226,6 +232,7 @@
       <p>However, our average wait time is (0 + &delta; + 2&delta; + 3&delta;) / 4 = 1.5&delta;, which is really good!</p>
       <p>This is even fairer than first come first serve because every process gets a chance to run. In this case, if a tiny little job comes in, you get that tiny little job done and then continue back to your bigger jobs.</p>
       <p>There is an issue though, since you can still <b>starve</b> if a lot of small jobs come in, since they get sent to the front of the queue. Placing new jobs at the end of the scheduled queue is a remedy to this. If thought of like a lay-up line, each job gets a turn to run. Even if a lot of short jobs arrive, there will only be a finite amount before every job gets its turn.</p>
+      <hr />
 
     </div>
 
@@ -263,7 +270,7 @@
       <p>Let's now introduce the notion <b>observability</b>, which is what an observer can see.</p>
       <p>One of the assumptions made is that the shared variables are visible. All values are visible and we can see that they have been operated on.</p>
       <p>However, there may be some shared variables that are not always visible to other threads. If something is not visible, then it technically isn't a problem. However, if something is not visible, there is no way to know if it's right or wrong, so this behavior is buggy.</p>
-
+      
 
       <h3 id="serialization">Serializibility</h3>
       <p>Suppose we question if our implementation is correct or not. We can assume our implementation is correct if all observable behavior can be justified by serial execution of the transitions. This means that an outcome is correct if its outcome is equal to the outcome of all transactions that occur sequentially, with no time overlap.</p>
@@ -283,7 +290,7 @@
       <p>In this very simplistic case, we will ignore a multitude of errors that include and are not limited to not checking for negative numbers, not checking for overflow, and not checking to see if there's enough money left in one's balance.</p>
       <p>The issue we are concerned about is that this code is buggy if multithreaded. There are a multitude of <b>race conditions</b> such as two withdraws at the same time, two deposits at the same time, and a deposit and a withdraw at the same time.</p>
       <p>This is because  <span>balance += amount</span>  is not <b>atomic</b>. It is broken up into three steps: to load balance into register, add the amount, and store the result. If two reads occur at once, and one write occurs before the other, then the written amount won't be accurate. The standard idea to prevent this from happening and come to serializibility is to implement atomicity around the section of code that is not atomic.</p>
-
+      <hr />
     </div>
 
     <div class="content-section">
