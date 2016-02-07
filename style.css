@@ -7,8 +7,30 @@ body {
     font-family: sans-serif;
 }
 
-h1 {
+.header {
     text-align: center;
+}
+
+.header p {
+    font-style: italic;
+}
+
+#fcfs-table {
+    font-family: monospace;
+    table-layout: fixed;
+    padding: 0 0 0 50px;
+}
+
+#fcfs-table td {
+    width: 120px;
+}
+
+#fcfs-table td:first-child {
+    width: 60px;
+}
+
+#fcfs-table td:nth-child(4) {
+    width: 200px;
 }
 
 #content {

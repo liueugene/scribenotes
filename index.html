@@ -1,15 +1,104 @@
 <html>
   <head>
-    <title></title>
+    <title>CS 111 Lecture 8 Notes</title>
     <meta content="">
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
   
   <div id="content">
-  
-  <h1>Title</h1>
-  <h2>asdf</h1>
+    <div class="header">
+      <h1>Lecture 8 (02/03/2016)</h1>
+      <h2>Scheduling & Synchronization</h2>
+      <p>by Eugene Liu, Brandon Liu, and Jennifer Liaw</p>
+    </div>
+
+    <div class="nav">
+      <h2>Contents</h2>
+      <ul>
+        <li><a href="#intro">Intro</a></li>
+        <li><a href="#fcfs">First Come First Serve</a></li>
+          <ul>
+            <li><a href="#fcfs_util">Utilization</a></li>
+            <li><a href="fcfs_awt">Average Wait Time</a></li>
+          </ul>
+        </li>
+        <li><a href="#sjf">Shortest Job First</a></li>
+        <li><a href="#preempt">Preemption</a></li>
+          <ul>
+            <li><a href="#round_robin">Round Robin</a></li>
+          </ul>
+        <li><a href="#sync">Synchronization</a></li>
+          <ul>
+            <li><a href="#sync_goals">Goals</a></li>
+            <li><a href="#sequence">Sequence Coordination</a></li>
+            <li><a href="#isolation">Isolation</a></li>
+            <li><a href="#atomicity">Atomicity</a></li>
+            <li><a href="#serialization">Serialization</a></li>
+          </ul>
+        <li><a href="#critical_sections">Critical Sections</a></li>
+          <ul>
+            <li><a href="#goldilocks">Goldilocks Principle</a></li>
+          </ul>
+
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2 id="intro">Introduction</a></h2>
+      <h3>Last time...</h3>
+      <p>In the last lecture, we talked about scheduling mechanisms, that is, how to switch from one thread to another. With scheduling mechanisms covered, it is now possible to discuss scheduling policy. Assuming we have the mechanisms working, scheduling policy is the high level idea of what we should do with the powerful mechanisms we built.</p>
+
+    </div>
+
+    <div class="content-section">
+      <h2 id="fcfs">First Come First Serve</a></h2>
+      <h3>A dumb, simple scheduling policy.</h3>
+      <p>Suppose we are back in elementary school. The golden rule that was used to attend to students was very simply, and very fair. Everybody takes their turn, and you take your turn in the order you arrived. The first student to arrive is the first student served. This policy is known as <b>first come first serve</b> (FCFS).</p>
+      <p>Let's have an example problem. Assume we have a system with four tasks: a, b, c, d. These tasks have the following characteristics:</p>
+        <table id="fcfs-table">
+          <tr>
+            <td>Job</td>
+            <td>Arrival Time</td>
+            <td>Run Time</td>
+            <td>Time to first output</td>
+          </tr>
+          <tr>
+            <td>A</td>
+            <td>0</td>
+            <td>5</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>B</td>
+            <td>1</td>
+            <td>2</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td>C</td>
+            <td>2</td>
+            <td>9</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td>D</td>
+            <td>3</td>
+            <td>4</td>
+            <td>13</td>
+          </tr>
+        </table>
+      <p>Job is the job to be run. Arrival time is the time, starting at 0, in which each job arrives. Run time is the time it takes for a job to run to completion. Lastly, time to the first output is the time it takes from when the job arrives to when it first starts outputting.</p>
+      <p>Time    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9<br />Process A A A A A|B B|C C C C C C C C C|D D D D<br />Running
+      </p>
+
+      </p>
+
+    </div>
+
+
+
+  <h2>asdf</h2>
   <p>hello</p>
   
   
