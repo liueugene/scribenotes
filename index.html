@@ -276,7 +276,7 @@
 
       <p>In this very simplistic case, we will ignore a multitude of errors that include and are not limited to not checking for negative numbers, not checking for overflow, and not checking to see if there's enough money left in one's balance.</p>
       <p>The issue we are concerned about is that this code is buggy if multithreaded. There are a multitude of <b>race conditions</b> such as two withdraws at the same time, two deposits at the same time, and a deposit and a withdraw at the same time.</p>
-      <p>This is because  <span>balance += amount</span>  is not <b>atomic</b>. It is broken up into three steps: to load balance into register, add the amount, and store the result. If two reads occur at once, and one write occurs before the other, then the written amount won’t be accurate. The standard idea to prevent this from happening and come to serializibility is to implement atomicity around the section of code that is not atomic.</p>
+      <p>This is because  <span>balance += amount</span>  is not <b>atomic</b>. It is broken up into three steps: to load balance into register, add the amount, and store the result. If two reads occur at once, and one write occurs before the other, then the written amount won't be accurate. The standard idea to prevent this from happening and come to serializibility is to implement atomicity around the section of code that is not atomic.</p>
 
     </div>
 
