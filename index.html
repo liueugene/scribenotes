@@ -49,6 +49,11 @@
       <h3>Last time...</h3>
       <p>In the last lecture, we talked about scheduling mechanisms, that is, how to switch from one thread to another. With scheduling mechanisms covered, it is now possible to discuss scheduling policy. Assuming we have the mechanisms working, scheduling policy is the high level idea of what we should do with the powerful mechanisms we built.</p>
 
+      <h3>An Analogy</h3>
+      <p>To introduce the topic of scheduling, consider an order for 500 Model T's from Chicago. Once this order is processed, we can start assembling these cars. We can start building cars, and after some time we complete our first car. Eventually more and more Model T's are being completed, but there is a very high demand for Model A's, so we switch to producing these cars instead. Sometime along the way, we'll switch back, finish our order of 500 Model T's, and continue to process new orders.</p> 
+      <p>In a way, this is much like scheduling algorithms for computers. When an order first comes in, it's equivalent to a process being forked to run a job. An execvp() call can be seen as when assembly of a Model T begins. When the first car is completed, that is the first useful output of a process. Switching between making different cars would be a context switch. The turnaround time would be the time between the fork() call and exit, and runtime would be the time between execvp() and exit.</p>
+      <img src="images/programsched.png">
+
     </div>
 
     <div class="content-section">
