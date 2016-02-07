@@ -36,6 +36,14 @@ table {
     width: 80px;
 }
 
+#wait-time td:first-child {
+    width: 100px;
+}
+
+#wait-time td {
+    width: 120px;
+}
+
 #content {
     background-color: #ffffff;
     min-width: 800px;

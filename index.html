@@ -19,18 +19,18 @@
         <li><a href="#intro">Intro</a></li>
         <li><a href="#fcfs">First Come First Serve</a></li>
           <ul>
-            <li><a href="#fcfs_util">Utilization</a></li>
-            <li><a href="fcfs_awt">Average Wait Time</a></li>
+            <li><a href="#fcfs-util">Utilization</a></li>
+            <li><a href="#fcfs-awt">Average Wait Time</a></li>
           </ul>
         </li>
         <li><a href="#sjf">Shortest Job First</a></li>
         <li><a href="#preempt">Preemption</a></li>
           <ul>
-            <li><a href="#round_robin">Round Robin</a></li>
+            <li><a href="#round-robin">Round Robin</a></li>
           </ul>
         <li><a href="#sync">Synchronization</a></li>
           <ul>
-            <li><a href="#sync_goals">Goals</a></li>
+            <li><a href="#sync-goals">Goals</a></li>
             <li><a href="#sequence">Sequence Coordination</a></li>
             <li><a href="#isolation">Isolation</a></li>
             <li><a href="#atomicity">Atomicity</a></li>
@@ -54,8 +54,8 @@
     <div class="content-section">
       <h2 id="fcfs">First Come First Serve</a></h2>
       <h3>A dumb, simple scheduling policy.</h3>
-      <p>Suppose we are back in elementary school. The golden rule that was used to attend to students was very simply, and very fair. Everybody takes their turn, and you take your turn in the order you arrived. The first student to arrive is the first student served. This policy is known as <b>first come first serve</b> (FCFS).</p>
-      <p>Let's have an example problem. Assume we have a system with four tasks: a, b, c, d. These tasks have the following characteristics:</p>
+      <p>Suppose we are back in elementary school. The golden rule that was used to attend to students was very simply, and very fair. Everybody takes their turn, and you take your turn in the order you arrived. The first student to arrive is the first student served. This policy is known as <b>First Come First Serve</b> (FCFS).</p>
+      <p>Let's have an example problem. Assume we have a system with four tasks: A, B, C, D. These tasks have the following characteristics:</p>
         <table id="fcfs-table">
           <tr>
             <td>Job</td>
@@ -99,6 +99,161 @@
           <td>A A A A A|B B|C C C C C C C C C|D D D D</td>
         </tr>
       </table>
+      <p>A arrives and runs for 5 seconds. By the time A is done, B, C, and D are all waiting to run. We run B. This continues until D finishes. The time taken to run the jobs individually totals to be 20 seconds. Furthermore, we must account for context switches (denoted by '|') between threads, which we give a time of &delta;. Thus, the total time from start to finish would be 20 + 3&delta; seconds.</p>
+
+      <p id="fcfs-util">A few metrics can be used to compare different policies. <b>Utilization</b> measures how well the scheduler utilizes its time. This can be calculated by dividing the total time spent doing work by the total time from start to finish. In this case, it is 20 seconds / (20+3&delta; seconds) which should be a high number if &delta; is small.</p>
+      <p id="fcfs-awt">Another metric that can be used is <b>average wait time</b>, which is the average of the time between when a job arrives, and the time until it start running.</p>
+      <p>The wait time for process A is <b>0</b> because it arrives at time 0 and starts at time 0.<br />B arrives time 1 and starts at time 5+delta, for a wait time of <b>4+&delta;</b>.<br />C arrives at time 2, starts at 7+2&delta;, for a wait time of <b>5+2&delta;</b>.<br />Lastly, D arrives at time 3, starts at 16+3&delta;, for a wait time of <b>13+3&delta;</b><br />The average of these times is just the sum divided by the number, which is ( 0 + (4+&delta;) + (5+2&delta;) + (13+3&delta;) ) / 4 = <b>5.5+1.5&delta;</b></p>
+      <table id="wait-time">
+        <tr>
+          <td>Process</td>
+          <td>Arrival time</td>
+          <td>Start time</td>
+          <td>Wait time</td>
+        </tr>
+        <tr>
+          <td>A</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>B</td>
+          <td>1</td>
+          <td>5 + &delta;</td>
+          <td>4 + &delta;</td>
+        </tr>
+        <tr>
+          <td>C</td>
+          <td>2</td>
+          <td>7 + 2&delta;</td>
+          <td>5 + 2&delta;</td>
+        </tr>
+        <tr>
+          <td>D</td>
+          <td>3</td>
+          <td>16 + 3&delta;</td>
+          <td>13 + 3&delta;</td>
+        </tr>
+        <tr>
+          <td>Average</td>
+          <td></td>
+          <td></td>
+          <td>5 + 1.5&delta;</td>
+        </tr>
+      </table>
+
+      <p>From the point of view of <em>throughput</em>, utilization was not bad, since there were only 3 context switches between 4 jobs. This is the smallest number possible if we want to run every job. The wait time is quite long though, especially since job C runs for a long time before D can start.</p>
+    </div>
+
+    <div class="content-section">
+      <h2 id="sjf">Shortest Job First</a></h2>
+      <h3>Another scheduling policy</h3>
+      <p>First come first serve had high utilization time, but an average average wait time. If our goal is to <em>minimize wait time</em>, we could try another scheduling policy. This scheduling policy is known as <b>shortest job first</b>, and it is exactly how it sounds: run the shortest job first.</p>
+      <p>In this case, jobs are not run in the order they arrive. At any given point in time, when deciding what job to run next, we pick the one with the shortest run time. Note that a job still must run fully to completion before another job is scheduled.</p>
+      <p>If we apply shortest job first to it, the schedule initially looks the same because when at the start only job A is available. At end of A, everything has already arrived. Since B is the shortest it is run next. Now, D is scheduled because it has a shorter runtime than C.</p>
+      <table id="process-table">
+        <tr>
+          <td>Time</td>
+          <td>0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9</td>
+        </tr>
+        <tr>
+          <td>Process Running</td>
+          <td>A A A A A|B B|D D D D|C C C C C C C C C</td>
+        </tr>
+      </table>
+      <p>With only three context switches the utilization is the same. But, the wait times will be different.</p>
+      <table id="wait-time">
+        <tr>
+          <td>Process</td>
+          <td>Wait time</td>
+        </tr>
+        <tr>
+          <td>A</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>B</td>
+          <td>4 + &delta;</td>
+        </tr>
+        <tr>
+          <td>C</td>
+          <td>9 + 3&delta;</td>
+        </tr>
+        <tr>
+          <td>D</td>
+          <td>4 + 2&delta;</td>
+        </tr>
+        <tr>
+          <td>Average</td>
+          <td>4.25 + 1.5&delta;</td>
+        </tr>
+      </table>
+
+      <p>A few important things to note about shortest job first is that we must make an assumption that we know how long each job is. This is reasonable if we run our program in a well controlled environment. If we run this scheduling policy though, we run the risk of <b><em>starvation</em></b>, which means that a job may never run. Since an infinite number of shorter jobs can keep arriving, there is no upper bound for the time a long(er) job may have to wait.</p>
+      <p>Shortest job first is <b><em>not</em> a fair scheduling policy</b>, as it may have a longer process wait for an extended period of time to make way for shorter processes. First come first serve on the other hand is fair, since each process will run in the order it arrives, and won’t have anything else scheduled before it.</p>
+
+    </div>
+
+    <div class="content-section">
+      <h2 id="preempt">Preemptive Scheduling Policies</a></h2>
+      <p>Suppose our program is running fine, until we get a massive job, longer than job C. Once it starts running, it will hold up the wait queue for a long time.</p>
+      <p>One solution is to use <b>preemption</b>, which context switches from one running process to another, even if it is still running. This solves the problem of a system that gets tied up doing one really big job.</p>
+      <p id="round-robint">The simplest preemptive scheduling policy is called <b>Round Robin</b>. Round Robin is first come first serve but with preemption. It preempts each time a new job arrives, and runs each process for one unit of time before switching to the next shortest job.</p>
+
+      <table id="process-table">
+        <tr>
+          <td>Time</td>
+          <td>0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9</td>
+        </tr>
+        <tr>
+          <td>Process Running</td>
+          <td>A|B|C|D|A|B|C|D|A|C|D|A|C|D|A|C C C C C</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^B done&nbsp;&nbsp;&nbsp;^D done   ^A done</td>
+        </tr>
+      </table>
+
+      <p>If we do Round Robin, we hurt <b>utilization</b> because we spend much more time doing context switches. A quick calculation gives 20/(20+15&delta;) due to 15 context switches.</p>
+      <p>However, our average wait time is (0 + &delta; + 2&delta; + 3&delta;) / 4 = 1.5&delta;, which is really good!</p>
+      <p>This is even fairer than first come first serve because every process gets a chance to run. In this case, if a tiny little job comes in, you get that tiny little job done and then continue back to your bigger jobs.</p>
+      <p>There is an issue though, since you can still <b>starve</b> if a lot of small jobs come in, since they get sent to the front of the queue. Placing new jobs at the end of the scheduled queue is a remedy to this. If thought of like a lay-up line, each job gets a turn to run. Even if a lot of short jobs arrive, there will only be a finite amount before every job gets its turn.</p>
+
+    </div>
+
+    <div class="content-section">
+      <h2 id="sync">Synchronization</a></h2>
+      <p>Synchronization is <b><em>the coordination of actions in a shared address space</em></b>. Its goal is to maintain data consistency, which must be done efficiently, clearly, simply, and flexibly.</p>
+      <p><b>Race conditions</b> occur between threads when they try to load and store from the same location in RAM since the default behavior is unsynchronized. Computation will silently proceed without notifying the user of any issues, making it very dangerous. It's like selling people a bunch of cars without brakes and seatbelts and saying just go drive them!</p>
+      <p>This is one of the central problems in OS design. The reason it's such a problem is that the general computational model we use is stupidly simple, yet we love it because it runs so fast.</p>
+      <p id="sync-goals">Goals:</p>
+        <ol>
+          <li><b>Robustness and consistency</b></li>
+            <ul>
+              <li>Data should be represented in memory robustly and consistently. Even in a delicate operation, at a high level, you want to look at RAM and know what state it's in and what’s going on.</li>
+            </ul>
+          <li><b>Efficiency</b></li>
+            <ul>
+              <li>It's easy to just run a program single-threaded and have no synchronization problem. In some cases, like on a dual-core CPU, it may be worth the efficiency cut to not deal with synchronization. However, if you have a 100 core CPU, you would be wasting resources by running just a single thread.</li>
+            </ul>
+          <li><b>Clear, simple, flexible</b> - In that orthogonal manner.</li>
+            <ul>
+              <li>Code should be easy to understand and maintain.</li>
+            </ul>
+        </ol>
+
+      <p>Issues occur when there are an overlapping set of variables when threads are in the same state. That is, when a set of variables are shared between threads, and the threads are using and/or modifying the variables at the same time, then there may be a problem.</p>
+      <p>There are three main tools we can use to avoid this problem.</p>
+
+      <h3 id="sequence">Sequence Coordination</h3>
+      <p>Sequence coordination can be thought of having actions done before-or-after. This just means that no two states can overlap. That is, if a thread is operating on a particular section, it is the only thread doing so. Thus, every change must be coordinated such that all changes must occur before or after a state.</p>
+      <h3 id="isolation">Isolation</h3>
+      <p>Isolation is as it sounds. Threads are operate in isolation such that they don't share variables. Threads can operate in parallel as long as they do not have any variables in common. This is the case because there won't be any race conditions in this case, so it doesn't matter what each of these threads do.</p>
+      <h3 id="atomicity">Atomicity</h3>
+      <p>Another mechanism that can be used is atomic action. An operation is atomic if it is fully executed, or not at all. All other threads that see such an operation will should never see an operation as halfway complete. This is useful because it prevents cases in which an operation is interrupted. For example, if an operation halts in the middle, some values will be set, but others aren't. Ensuring that either nothing happened or it went to completion is important so threads can know the proper values of variables</p>
+
 
     </div>
 
