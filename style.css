@@ -1,0 +1,29 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+body {
+    background-color: #eeeeee;
+    font-family: sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+#content {
+    background-color: #ffffff;
+    min-width: 800px;
+    width: 60%;
+    margin: 0 auto;
+    padding: 24px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.25);
+}
+
+.code {
+    font-family: monospace;
+    border: 2px solid gray;
+    padding: 8px;
+    width: 80%;
+    margin: 0 auto;
+}
