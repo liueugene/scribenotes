@@ -44,6 +44,10 @@ table {
     width: 120px;
 }
 
+span {
+    font-family:monospace;
+}
+
 #content {
     background-color: #ffffff;
     min-width: 800px;

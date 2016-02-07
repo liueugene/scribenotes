@@ -228,7 +228,7 @@
       <p>Synchronization is <b><em>the coordination of actions in a shared address space</em></b>. Its goal is to maintain data consistency, which must be done efficiently, clearly, simply, and flexibly.</p>
       <p><b>Race conditions</b> occur between threads when they try to load and store from the same location in RAM since the default behavior is unsynchronized. Computation will silently proceed without notifying the user of any issues, making it very dangerous. It's like selling people a bunch of cars without brakes and seatbelts and saying just go drive them!</p>
       <p>This is one of the central problems in OS design. The reason it's such a problem is that the general computational model we use is stupidly simple, yet we love it because it runs so fast.</p>
-      <p id="sync-goals">Goals:</p>
+      <p id="sync-goals"><b>Goals:</b></p>
         <ol>
           <li><b>Robustness and consistency</b></li>
             <ul>
@@ -253,20 +253,45 @@
       <p>Isolation is as it sounds. Threads are operate in isolation such that they don't share variables. Threads can operate in parallel as long as they do not have any variables in common. This is the case because there won't be any race conditions in this case, so it doesn't matter what each of these threads do.</p>
       <h3 id="atomicity">Atomicity</h3>
       <p>Another mechanism that can be used is atomic action. An operation is atomic if it is fully executed, or not at all. All other threads that see such an operation will should never see an operation as halfway complete. This is useful because it prevents cases in which an operation is interrupted. For example, if an operation halts in the middle, some values will be set, but others aren't. Ensuring that either nothing happened or it went to completion is important so threads can know the proper values of variables</p>
+      <hr />
+      <p>Let's now introduce the notion <b>observability</b>, which is what an observer can see.</p>
+      <p>One of the assumptions made is that the shared variables are visible. All values are visible and we can see that they have been operated on.</p>
+      <p>However, there may be some shared variables that are not always visible to other threads. If something is not visible, then it technically isn't a problem. However, if something is not visible, there is no way to know if it's right or wrong, so this behavior is buggy.</p>
 
+
+      <h3 id="serialization">Serializibility</h3>
+      <p>Suppose we question if our implementation is correct or not. We can assume our implementation is correct if all observable behavior can be justified by serial execution of the transitions. This means that an outcome is correct if its outcome is equal to the outcome of all transactions that occur sequentially, with no time overlap.</p>
+      <p>Let's have an example of a pretend bank account with $100. Mr. Eggert and his brother both have cards that allows for depositing. Let's also assume that there is a thread <span>T1</span> which represents Mr. Eggert, and a thread <span>T2</span> that represents his brother. Lastly, say there is a shared variable named balance.</p>
+      <p>We start with $100. Mr. Eggert deposits $50. His brother withdraws $20.</p>
+
+      <div class="code">
+        int balance = 10000; // cents
+        <p>int deposit(int amount) {<br />
+          &nbsp;&nbsp;&nbsp;balance += amount;<br />
+        }</p>
+        int withdraw(int amount) {</br >
+          &nbsp;&nbsp;&nbsp;balance -= amount;<br />
+        }
+      </div>
+
+      <p>In this very simplistic case, we will ignore a multitude of errors that include and are not limited to not checking for negative numbers, not checking for overflow, and not checking to see if there's enough money left in one's balance.</p>
+      <p>The issue we are concerned about is that this code is buggy if multithreaded. There are a multitude of <b>race conditions</b> such as two withdraws at the same time, two deposits at the same time, and a deposit and a withdraw at the same time.</p>
+      <p>This is because  <span>balance += amount</span>  is not <b>atomic</b>. It is broken up into three steps: to load balance into register, add the amount, and store the result. If two reads occur at once, and one write occurs before the other, then the written amount won’t be accurate. The standard idea to prevent this from happening and come to serializibility is to implement atomicity around the section of code that is not atomic.</p>
 
     </div>
 
-
-
-  <h2>asdf</h2>
-  <p>hello</p>
-  
-  
-  <div class="code">
-  int main() {
-  }
+    <div class="content-section">
+      <h2 id="critical-sections">Critical Sections</a></h2> 
+      <p>A <b>critical section</b> can be thought as a small region of code and to be executed <b><em>atomically</em></b>, even if the machine would not have it that way normally. This is a section of code in which at most 1 program counter should be executed on behalf of any particular object (which is our balance object in this case). If a box is placed around this critical section, and at most 1 thread executes our box, then it'll be safe. Technically, a box can be drawn around the entire program to make one big critical section, but then that defeats the purpose of multithreading.</p>
+      <p>Too many critical sections and your performance goes to pieces. Critical sections that are too small will lead to better performance, but there will still be race conditions. Thus, there is a <b>Goldilocks principle</b> for critical sections:</p>
+      <h3 id="goldilocks">Goldilocks Principle</h3>
+      <ul>
+        <li>Look for <B><em>shared writes</em></b>. Each of these shared writes should be in a critical section. This ensures that the critical section is big enough.</li>
+        <li>Look for <b><em>dependent reads</em></b>. This dependent read's value will be used in a shared write. Thus, the critical section needs to include this dependent read.</li>
+        <li>Lastly, we need to <b><em>include dependent reads and intervening computations</em></b>. These will be added to the critical section. This process may have to repeat over and over for each new dependent read, until we have our critical section.</li>
+      </ul>
   </div>
+
   
   </div>  
   </body>
