@@ -27,6 +27,18 @@ a:hover {
     font-style: italic;
 }
 
+.process-table td:first-child {
+    width: 100px;
+}
+
+.wait-time td:first-child {
+    width: 100px;
+}
+
+.wait-time td {
+    width: 130px;
+}
+
 table {
     font-family: 'Roboto Mono', monospace;
     padding: 0 0 0 50px;
@@ -44,17 +56,7 @@ table {
     width: 200px;
 }
 
-#process-table td:first-child {
-    width: 100px;
-}
 
-#wait-time td:first-child {
-    width: 100px;
-}
-
-#wait-time td {
-    width: 130px;
-}
 
 span {
     font-family: 'Roboto Mono', monospace;
