@@ -2,10 +2,10 @@
 <html>
   <head>
     <title>CS 111 Lecture 8 Notes</title>
-    <meta content="">
+    <meta name="author" content="Eugene Liu, Brandon Liu, Jennifer Liaw">
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="style.css">
-	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:400,700' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
   </head>
   <body>
   
@@ -20,18 +20,19 @@
       <h2>Contents</h2>
       <ul>
         <li><a href="#intro">Intro</a></li>
-        <li><a href="#fcfs">First Come First Serve</a></li>
+        <li><a href="#fcfs">First Come First Serve</a>
           <ul>
             <li><a href="#fcfs-util">Utilization</a></li>
             <li><a href="#fcfs-awt">Average Wait Time</a></li>
           </ul>
         </li>
         <li><a href="#sjf">Shortest Job First</a></li>
-        <li><a href="#preempt">Preemption</a></li>
+        <li><a href="#preempt">Preemption</a>
           <ul>
             <li><a href="#round-robin">Round Robin</a></li>
           </ul>
-        <li><a href="#sync">Synchronization</a></li>
+        </li>
+        <li><a href="#sync">Synchronization</a>
           <ul>
             <li><a href="#sync-goals">Goals</a></li>
             <li><a href="#sequence">Sequence Coordination</a></li>
@@ -39,31 +40,32 @@
             <li><a href="#atomicity">Atomicity</a></li>
             <li><a href="#serialization">Serialization</a></li>
           </ul>
-        <li><a href="#critical_sections">Critical Sections</a></li>
+        </li>
+        <li><a href="#critical_sections">Critical Sections</a>
           <ul>
             <li><a href="#goldilocks">Goldilocks Principle</a></li>
           </ul>
-
+        </li>
       </ul>
       <hr />
     </div>
 
     <div class="content-section">
-      <h2 id="intro">Introduction</a></h2>
+      <h2 id="intro"><a>Introduction</a></h2>
       <h3>Last time...</h3>
       <p>In the last lecture, we talked about scheduling mechanisms, that is, how to switch from one thread to another. With scheduling mechanisms covered, it is now possible to discuss scheduling policy. Assuming we have the mechanisms working, scheduling policy is the high level idea of what we should do with the powerful mechanisms we built.</p>
 
       <h3>An Analogy</h3>
       <p>To introduce the topic of scheduling, consider an order for 500 Model T's from Chicago. Once this order is processed, we can start assembling these cars. We can start building cars, and after some time we complete our first car. Eventually more and more Model T's are being completed, but there is a very high demand for Model A's, so we switch to producing these cars instead. Sometime along the way, we'll switch back, finish our order of 500 Model T's, and continue to process new orders.</p> 
       <p>In a way, this is much like scheduling algorithms for computers. When an order first comes in, it's equivalent to a process being forked to run a job. An execvp() call can be seen as when assembly of a Model T begins. When the first car is completed, that is the first useful output of a process. Switching between making different cars would be a context switch. The turnaround time would be the time between the fork() call and exit, and runtime would be the time between execvp() and exit.</p>
-      <img src="images/programsched.png">
+      <img src="images/programsched.png" alt="Program Schedule">
       <br />
       <hr />
 
     </div>
 
     <div class="content-section">
-      <h2 id="fcfs">First Come First Serve</a></h2>
+      <h2 id="fcfs"><a>First Come First Serve</a></h2>
       <h3>A dumb, simple scheduling policy.</h3>
       <p>Suppose we are back in elementary school. The golden rule that was used to attend to students was very simply, and very fair. Everybody takes their turn, and you take your turn in the order you arrived. The first student to arrive is the first student served. This policy is known as <b>First Come First Serve</b> (FCFS).</p>
       <p>Let's have an example problem. Assume we have a system with four tasks: A, B, C, D. These tasks have the following characteristics:</p>
@@ -100,7 +102,7 @@
           </tr>
         </table>
       <p>Job is the job to be run. Arrival time is the time, starting at 0, in which each job arrives. Run time is the time it takes for a job to run to completion. Lastly, time to the first output is the time it takes from when the job arrives to when it first starts outputting.</p>
-      <table id="process-table">
+      <table class="process-table">
         <tr>
           <td>Time</td>
           <td>0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9</td>
@@ -115,7 +117,7 @@
       <p id="fcfs-util">A few metrics can be used to compare different policies. <b>Utilization</b> measures how well the scheduler utilizes its time. This can be calculated by dividing the total time spent doing work by the total time from start to finish. In this case, it is 20 seconds / (20+3&delta; seconds) which should be a high number if &delta; is small.</p>
       <p id="fcfs-awt">Another metric that can be used is <b>average wait time</b>, which is the average of the time between when a job arrives, and the time until it start running.</p>
       <p>The wait time for process A is <b>0</b> because it arrives at time 0 and starts at time 0.<br />B arrives time 1 and starts at time 5+delta, for a wait time of <b>4+&delta;</b>.<br />C arrives at time 2, starts at 7+2&delta;, for a wait time of <b>5+2&delta;</b>.<br />Lastly, D arrives at time 3, starts at 16+3&delta;, for a wait time of <b>13+3&delta;</b><br />The average of these times is just the sum divided by the number, which is ( 0 + (4+&delta;) + (5+2&delta;) + (13+3&delta;) ) / 4 = <b>5.5+1.5&delta;</b></p>
-      <table id="wait-time">
+      <table class="wait-time">
         <tr>
           <td>Process</td>
           <td>Arrival time</td>
@@ -160,12 +162,12 @@
     </div>
 
     <div class="content-section">
-      <h2 id="sjf">Shortest Job First</a></h2>
+      <h2 id="sjf"><a>Shortest Job First</a></h2>
       <h3>Another scheduling policy</h3>
       <p>First come first serve had high utilization time, but an average average wait time. If our goal is to <em>minimize wait time</em>, we could try another scheduling policy. This scheduling policy is known as <b>shortest job first</b>, and it is exactly how it sounds: run the shortest job first.</p>
       <p>In this case, jobs are not run in the order they arrive. At any given point in time, when deciding what job to run next, we pick the one with the shortest run time. Note that a job still must run fully to completion before another job is scheduled.</p>
       <p>If we apply shortest job first to it, the schedule initially looks the same because when at the start only job A is available. At end of A, everything has already arrived. Since B is the shortest it is run next. Now, D is scheduled because it has a shorter runtime than C.</p>
-      <table id="process-table">
+      <table class="process-table">
         <tr>
           <td>Time</td>
           <td>0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9</td>
@@ -176,7 +178,7 @@
         </tr>
       </table>
       <p>With only three context switches the utilization is the same. But, the wait times will be different.</p>
-      <table id="wait-time">
+      <table class="wait-time">
         <tr>
           <td>Process</td>
           <td>Wait time</td>
@@ -210,12 +212,12 @@
     </div>
 
     <div class="content-section">
-      <h2 id="preempt">Preemptive Scheduling Policies</a></h2>
+      <h2 id="preempt"><a>Preemptive Scheduling Policies</a></h2>
       <p>Suppose our program is running fine, until we get a massive job, longer than job C. Once it starts running, it will hold up the wait queue for a long time.</p>
       <p>One solution is to use <b>preemption</b>, which context switches from one running process to another, even if it is still running. This solves the problem of a system that gets tied up doing one really big job.</p>
       <p id="round-robint">The simplest preemptive scheduling policy is called <b>Round Robin</b>. Round Robin is first come first serve but with preemption. It preempts each time a new job arrives, and runs each process for one unit of time before switching to the next shortest job.</p>
 
-      <table id="process-table">
+      <table class="process-table">
         <tr>
           <td>Time</td>
           <td>0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9</td>
@@ -239,24 +241,27 @@
     </div>
 
     <div class="content-section">
-      <h2 id="sync">Synchronization</a></h2>
+      <h2 id="sync"><a>Synchronization</a></h2>
       <p>Synchronization is <b><em>the coordination of actions in a shared address space</em></b>. Its goal is to maintain data consistency, which must be done efficiently, clearly, simply, and flexibly.</p>
       <p><b>Race conditions</b> occur between threads when they try to load and store from the same location in RAM since the default behavior is unsynchronized. Computation will silently proceed without notifying the user of any issues, making it very dangerous. It's like selling people a bunch of cars without brakes and seatbelts and saying just go drive them!</p>
       <p>This is one of the central problems in OS design. The reason it's such a problem is that the general computational model we use is stupidly simple, yet we love it because it runs so fast.</p>
       <p id="sync-goals"><b>Goals:</b></p>
         <ol>
-          <li><b>Robustness and consistency</b></li>
+          <li><b>Robustness and consistency</b>
             <ul>
               <li>Data should be represented in memory robustly and consistently. Even in a delicate operation, at a high level, you want to look at RAM and know what state it's in and what’s going on.</li>
             </ul>
-          <li><b>Efficiency</b></li>
+          </li>
+          <li><b>Efficiency</b>
             <ul>
               <li>It's easy to just run a program single-threaded and have no synchronization problem. In some cases, like on a dual-core CPU, it may be worth the efficiency cut to not deal with synchronization. However, if you have a 100 core CPU, you would be wasting resources by running just a single thread.</li>
             </ul>
-          <li><b>Clear, simple, flexible</b> - In that orthogonal manner.</li>
+          </li>
+          <li><b>Clear, simple, flexible</b> - In that orthogonal manner.
             <ul>
               <li>Code should be easy to understand and maintain.</li>
             </ul>
+          </li>
         </ol>
 
       <p>Issues occur when there are an overlapping set of variables when threads are in the same state. That is, when a set of variables are shared between threads, and the threads are using and/or modifying the variables at the same time, then there may be a problem.</p>
@@ -284,7 +289,7 @@
         <p>int deposit(int amount) {<br />
           &nbsp;&nbsp;&nbsp;balance += amount;<br />
         }</p>
-        int withdraw(int amount) {</br >
+        int withdraw(int amount) {<br />
           &nbsp;&nbsp;&nbsp;balance -= amount;<br />
         }
       </div>
@@ -296,7 +301,7 @@
     </div>
 
     <div class="content-section">
-      <h2 id="critical-sections">Critical Sections</a></h2> 
+      <h2 id="critical-sections"><a>Critical Sections</a></h2> 
       <p>A <b>critical section</b> can be thought as a small region of code and to be executed <b><em>atomically</em></b>, even if the machine would not have it that way normally. This is a section of code in which at most 1 program counter should be executed on behalf of any particular object (which is our balance object in this case). If a box is placed around this critical section, and at most 1 thread executes our box, then it'll be safe. Technically, a box can be drawn around the entire program to make one big critical section, but then that defeats the purpose of multithreading.</p>
       <p>Too many critical sections and your performance goes to pieces. Critical sections that are too small will lead to better performance, but there will still be race conditions. Thus, there is a <b>Goldilocks principle</b> for critical sections:</p>
       <h3 id="goldilocks">Goldilocks Principle</h3>
