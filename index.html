@@ -11,12 +11,11 @@
   
   <div id="content">
     <div class="header">
+	  <div class="center">
       <h1>Lecture 8 (02/03/2016)</h1>
       <h2>Scheduling &amp; Synchronization</h2>
       <p>by Eugene Liu, Brandon Liu, and Jennifer Liaw</p>
-    </div>
-
-    <div class="nav">
+	  </div>
       <h2>Contents</h2>
       <ul>
         <li><a href="#intro">Intro</a></li>
@@ -47,27 +46,25 @@
           </ul>
         </li>
       </ul>
-      <hr />
     </div>
 
     <div class="content-section">
       <h2 id="intro">Introduction</h2>
       <h3>Last time...</h3>
-      <p>In the last lecture, we talked about scheduling mechanisms, that is, how to switch from one thread to another. With scheduling mechanisms covered, it is now possible to discuss scheduling policy. Assuming we have the mechanisms working, scheduling policy is the high level idea of what we should do with the powerful mechanisms we built.</p>
+      <p>In the last lecture, we talked about scheduling mechanisms; that is, how to switch from one thread to another. With scheduling mechanisms covered, it is now possible to discuss scheduling policy. Assuming we have the mechanisms working, scheduling policy is the high level idea of what we should do with the powerful mechanisms we built.</p>
 
       <h3>An Analogy</h3>
       <p>To introduce the topic of scheduling, consider an order for 500 Model T's from Chicago. Once this order is processed, we can start assembling these cars. We can start building cars, and after some time we complete our first car. Eventually more and more Model T's are being completed, but there is a very high demand for Model A's, so we switch to producing these cars instead. Sometime along the way, we'll switch back, finish our order of 500 Model T's, and continue to process new orders.</p> 
       <p>In a way, this is much like scheduling algorithms for computers. When an order first comes in, it's equivalent to a process being forked to run a job. An execvp() call can be seen as when assembly of a Model T begins. When the first car is completed, that is the first useful output of a process. Switching between making different cars would be a context switch. The turnaround time would be the time between the fork() call and exit, and runtime would be the time between execvp() and exit.</p>
       <img src="images/programsched.png" alt="Program Schedule">
       <br />
-      <hr />
 
     </div>
 
     <div class="content-section">
       <h2 id="fcfs">First Come First Serve</h2>
       <h3>A dumb, simple scheduling policy.</h3>
-      <p>Suppose we are back in elementary school. The golden rule that was used to attend to students was very simply, and very fair. Everybody takes their turn, and you take your turn in the order you arrived. The first student to arrive is the first student served. This policy is known as <b>First Come First Serve</b> (FCFS).</p>
+      <p>Suppose we are back in elementary school. The golden rule that was used to attend to students was very simple and very fair. Everybody takes their turn, and you take your turn in the order you arrived. The first student to arrive is the first student served. This policy is known as <b>First Come First Serve</b> (FCFS).</p>
       <p>Let's have an example problem. Assume we have a system with four tasks: A, B, C, D. These tasks have the following characteristics:</p>
         <table id="fcfs-table">
           <tr>
@@ -101,7 +98,7 @@
             <td>13</td>
           </tr>
         </table>
-      <p>Job is the job to be run. Arrival time is the time, starting at 0, in which each job arrives. Run time is the time it takes for a job to run to completion. Lastly, time to the first output is the time it takes from when the job arrives to when it first starts outputting.</p>
+      <p>"Job" is the job to be run. "Arrival time" is the time, starting at 0, in which each job arrives. "Run time" is the time it takes for a job to run to completion. Lastly, "time to first output" is the time it takes from when the job arrives to when it first starts outputting.</p>
       <table class="process-table">
         <tr>
           <td>Time</td>
@@ -158,7 +155,6 @@
 
       <p>From the point of view of <em>throughput</em>, utilization was not bad, since there were only 3 context switches between 4 jobs. This is the smallest number possible if we want to run every job. The wait time is quite long though, especially since job C runs for a long time before D can start.</p>
 
-      <hr />
     </div>
 
     <div class="content-section">
@@ -205,17 +201,16 @@
         </tr>
       </table>
 
-      <p>A few important things to note about shortest job first is that we must make an assumption that we know how long each job is. This is reasonable if we run our program in a well controlled environment. If we run this scheduling policy though, we run the risk of <b><em>starvation</em></b>, which means that a job may never run. Since an infinite number of shorter jobs can keep arriving, there is no upper bound for the time a long(er) job may have to wait.</p>
-      <p>Shortest job first is <b><em>not</em> a fair scheduling policy</b>, as it may have a longer process wait for an extended period of time to make way for shorter processes. First come first serve on the other hand is fair, since each process will run in the order it arrives, and wont have anything else scheduled before it.</p>
-      <hr />
+      <p>A few important things to note about shortest job first is that we must assume we know how long each job is. This is reasonable if we run our program in a well controlled environment. With this scheduling policy, though, we run the risk of <b><em>starvation</em></b>, which means that a job may never run. Since an infinite number of shorter jobs can keep arriving, there is no upper bound for the time a long(er) job may have to wait.</p>
+      <p>Shortest job first is <b><em>not</em> a fair scheduling policy</b>, as it may have a longer process wait for an extended period of time to make way for shorter processes. First come first serve on the other hand is fair, since each process will run in the order it arrives, and won't have anything else scheduled before it.</p>
 
     </div>
 
     <div class="content-section">
       <h2 id="preempt">Preemptive Scheduling Policies</h2>
-      <p>Suppose our program is running fine, until we get a massive job, longer than job C. Once it starts running, it will hold up the wait queue for a long time.</p>
+      <p>Suppose our program is running fine until we get a massive job, longer than job C. Once it starts running, it will hold up the wait queue for a long time.</p>
       <p>One solution is to use <b>preemption</b>, which context switches from one running process to another, even if it is still running. This solves the problem of a system that gets tied up doing one really big job.</p>
-      <p id="round-robint">The simplest preemptive scheduling policy is called <b>Round Robin</b>. Round Robin is first come first serve but with preemption. It preempts each time a new job arrives, and runs each process for one unit of time before switching to the next shortest job.</p>
+      <p id="round-robint">The simplest preemptive scheduling policy is called <b>Round Robin</b>. Round Robin is like first come first serve but with preemption. It preempts each time a new job arrives, and runs each process for one unit of time before switching to the next shortest job.</p>
 
       <table class="process-table">
         <tr>
@@ -236,7 +231,6 @@
       <p>However, our average wait time is (0 + &delta; + 2&delta; + 3&delta;) / 4 = 1.5&delta;, which is really good!</p>
       <p>This is even fairer than first come first serve because every process gets a chance to run. In this case, if a tiny little job comes in, you get that tiny little job done and then continue back to your bigger jobs.</p>
       <p>There is an issue though, since you can still <b>starve</b> if a lot of small jobs come in, since they get sent to the front of the queue. Placing new jobs at the end of the scheduled queue is a remedy to this. If thought of like a lay-up line, each job gets a turn to run. Even if a lot of short jobs arrive, there will only be a finite amount before every job gets its turn.</p>
-      <hr />
 
     </div>
 
@@ -257,7 +251,7 @@
               <li>It's easy to just run a program single-threaded and have no synchronization problem. In some cases, like on a dual-core CPU, it may be worth the efficiency cut to not deal with synchronization. However, if you have a 100 core CPU, you would be wasting resources by running just a single thread.</li>
             </ul>
           </li>
-          <li><b>Clear, simple, flexible</b> - In that orthogonal manner.
+          <li><b>Clarity, simplicity, flexibility</b> - In that orthogonal manner.
             <ul>
               <li>Code should be easy to understand and maintain.</li>
             </ul>
@@ -265,23 +259,23 @@
         </ol>
 
       <p>Issues occur when there are an overlapping set of variables when threads are in the same state. That is, when a set of variables are shared between threads, and the threads are using and/or modifying the variables at the same time, then there may be a problem.</p>
-      <p>There are three main tools we can use to avoid this problem.</p>
+      <p>There are three main tools we can use to avoid this situation:</p>
 
       <h3 id="sequence">Sequence Coordination</h3>
       <p>Sequence coordination can be thought of having actions done before-or-after. This just means that no two states can overlap. That is, if a thread is operating on a particular section, it is the only thread doing so. Thus, every change must be coordinated such that all changes must occur before or after a state.</p>
       <h3 id="isolation">Isolation</h3>
-      <p>Isolation is as it sounds. Threads are operate in isolation such that they don't share variables. Threads can operate in parallel as long as they do not have any variables in common. This is the case because there won't be any race conditions in this case, so it doesn't matter what each of these threads do.</p>
+      <p>Isolation is as it sounds. Threads are operated in isolation such that they don't share variables. Threads can operate in parallel as long as they do not have any variables in common. In this case there won't be any race conditions, so it doesn't matter what each of these threads do.</p>
       <h3 id="atomicity">Atomicity</h3>
-      <p>Another mechanism that can be used is atomic action. An operation is atomic if it is fully executed, or not at all. All other threads that see such an operation will should never see an operation as halfway complete. This is useful because it prevents cases in which an operation is interrupted. For example, if an operation halts in the middle, some values will be set, but others aren't. Ensuring that either nothing happened or it went to completion is important so threads can know the proper values of variables</p>
+      <p>Another mechanism that can be used is atomic action. An operation is atomic if it is fully executed, or not at all. All other threads that see such an operation should never see it halfway complete. This is useful because it prevents cases in which an operation is interrupted. For example, if an operation halts in the middle, some values will be set, but others aren't. Ensuring that either nothing happened or everything was completed is important so threads can know the proper values of variables.</p>
       <hr />
-      <p>Let's now introduce the notion <b>observability</b>, which is what an observer can see.</p>
+      <p>Let's now introduce the notion of <b>observability</b>, which is what an observer can see.</p>
       <p>One of the assumptions made is that the shared variables are visible. All values are visible and we can see that they have been operated on.</p>
       <p>However, there may be some shared variables that are not always visible to other threads. If something is not visible, then it technically isn't a problem. However, if something is not visible, there is no way to know if it's right or wrong, so this behavior is buggy.</p>
       
 
       <h3 id="serialization">Serializibility</h3>
       <p>Suppose we question if our implementation is correct or not. We can assume our implementation is correct if all observable behavior can be justified by serial execution of the transitions. This means that an outcome is correct if its outcome is equal to the outcome of all transactions that occur sequentially, with no time overlap.</p>
-      <p>Let's have an example of a pretend bank account with $100. Dr. Eggert and his brother both have cards that allows for depositing. Let's also assume that there is a thread <span>T1</span> which represents Dr. Eggert, and a thread <span>T2</span> that represents his brother. Lastly, say there is a shared variable named balance.</p>
+      <p>Let's have an example of a pretend bank account with $100. Dr. Eggert and his brother both have cards that allows for depositing. Let's also assume that there is a thread <span class="monospace">T1</span> which represents Dr. Eggert, and a thread <span class="monospace">T2</span> that represents his brother. Lastly, say there is a shared variable named balance.</p>
       <p>We start with $100. Dr. Eggert deposits $50. His brother withdraws $20.</p>
 
       <div class="code">
@@ -296,12 +290,12 @@
 
       <p>In this very simplistic case, we will ignore a multitude of errors that include and are not limited to not checking for negative numbers, not checking for overflow, and not checking to see if there's enough money left in one's balance.</p>
       <p>The issue we are concerned about is that this code is buggy if multithreaded. There are a multitude of <b>race conditions</b> such as two withdraws at the same time, two deposits at the same time, and a deposit and a withdraw at the same time.</p>
-      <p>This is because  <span>balance += amount</span>  is not <b>atomic</b>. It is broken up into three steps: to load balance into register, add the amount, and store the result. If two reads occur at once, and one write occurs before the other, then the written amount won't be accurate. The standard idea to prevent this from happening and come to serializibility is to implement atomicity around the section of code that is not atomic.</p>
-      <hr />
+      <p>This is because &nbsp;<span class="monospace">balance += amount</span>&nbsp; is not <b>atomic</b>. It is broken up into three steps: loading the balance into the register, adding the amount, and storing the result. If two reads occur at once, and one write occurs before the other, then the written amount won't be accurate. The standard idea to prevent this from happening and come to serializibility is to implement atomicity around the section of code that is not atomic.</p>
+
     </div>
 
     <div class="content-section">
-      <h2 id="critical-sections">Critical Sections</h2> 
+      <h2 id="critical_sections">Critical Sections</h2> 
       <p>A <b>critical section</b> can be thought as a small region of code and to be executed <b><em>atomically</em></b>, even if the machine would not have it that way normally. This is a section of code in which at most 1 program counter should be executed on behalf of any particular object (which is our balance object in this case). If a box is placed around this critical section, and at most 1 thread executes our box, then it'll be safe. Technically, a box can be drawn around the entire program to make one big critical section, but then that defeats the purpose of multithreading.</p>
       <p>Too many critical sections and your performance goes to pieces. Critical sections that are too small will lead to better performance, but there will still be race conditions. Thus, there is a <b>Goldilocks principle</b> for critical sections:</p>
       <h3 id="goldilocks">Goldilocks Principle</h3>

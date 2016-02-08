@@ -19,7 +19,7 @@ a:hover {
 	color:#78bbff;
 }
 
-.header {
+.center {
     text-align: center;
 }
 
@@ -58,17 +58,14 @@ table {
 
 
 
-span {
+.monospace {
     font-family: 'Roboto Mono', monospace;
 }
 
 #content {
-    background-color: #ffffff;
     min-width: 800px;
     width: 60%;
-    margin: 16px auto;
-    padding: 24px;
-    box-shadow: 0 0 24px rgba(0, 0, 0, 0.25);
+	margin: 0 auto;
 }
 
 #content img {
@@ -76,6 +73,13 @@ span {
 	max-width: 100%;
 	display: block;
 	margin: 0 auto;
+}
+
+.content-section, .header {
+	background-color: #ffffff;
+	box-shadow: 0 0 24px rgba(0, 0, 0, 0.25);
+	margin: 16px 0 16px 0;
+    padding: 24px;
 }
 
 .code {
